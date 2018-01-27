@@ -1,0 +1,19 @@
+//下面都是project的成员。属性和方法。
+
+group 'com.cosyit.gradle'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+//学习一个技术最好的地方就是在官网。这里只是入门。
+
+sourceCompatibility = 1.8
+
+//2个{} 就是2个闭包 传递给各自的方法。
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

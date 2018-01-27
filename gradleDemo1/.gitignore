@@ -1,0 +1,12 @@
+#Maven
+target/
+
+#IDEA
+
+.idea/
+*.iml
+
+#清空记忆
+#git rm -r --cached .
+#git add .
+#git commit -m 'update .gitignore'

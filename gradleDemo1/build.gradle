@@ -1,0 +1,78 @@
+group 'com.cosyit.gradle'
+version  '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'//工具视图：Tasks 下的build会多出war这个构建功能。
+
+//JDK
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
+
+//仓库
+repositories {
+
+
+/*
+    //优先使用私服仓库。保证数据一致性。
+    maven{
+        url ''
+    }
+    */
+
+
+    //先去本地查找
+    mavenLocal()
+
+
+    //再去中央仓库查找
+    mavenCentral()
+}
+
+//依赖管理
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'ch.qos.logback:logback-examples:1.2.3'
+}
+
+//定义一个闭包。
+def createDir={
+    path ->
+        File dir = new File(path);
+
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+}
+
+//声明一个任务：任务名makeJavaDir
+task makeJavaDir(){
+    def paths=['src/main/java','src/main/resoureces','src/test/java','src/test/resources']
+
+    doFirst {
+        paths.forEach(createDir) //顺序执行，脚本放前面。
+    }
+
+}
+
+/**
+创建web工程目录，分析：web只是比java多了一个webapp目录。
+ 所以可以依赖上面一个任务。web只创建其特有的目录即可。
+ */
+
+task makeWebDir(){
+    dependsOn 'makeJavaDir'
+    def paths=['src/main/webapp','src/test/mydefined']
+    //给这个任务添加一个动作，这次我们用doLast
+    doLast {
+        paths.forEach(
+             //把createDir闭包传递进去
+                createDir
+        )
+    }
+}
+
+//自定义war包的名字，覆盖IDEA系统不好看的的名字。
+war{
+    archiveName='gradle.war'
+}
+
